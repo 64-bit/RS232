@@ -35,6 +35,7 @@ module RS232(
 );
 
 
+
 //=======================================================
 //  REG/WIRE declarations
 //=======================================================
@@ -46,85 +47,6 @@ module RS232(
 //  Structural coding
 //=======================================================
 
-//The 2 bit rates we want are: 57600 and 115200
-//Divide this clock by 32 or 16 for the rates respectivly
-
-wire SerialClock_Raw;
-wire SerialClock;
-wire SerialClockLocked;
 
 
-Serial_PLL SerialPLL( //1.843200 MHz ISH
-	CLOCK_125_p,
-	0, //Never reset
-	SerialClock_Raw,
-	SerialClockLocked
-);
-
-assign SerialClock = SerialClock_Raw & SerialClockLocked;
-
-
-//Write some trash test code
-reg [17:0] ClockDivider;
-
-reg ColorOut;
-
-assign LEDG[0] = ColorOut;
-
-always @(posedge SerialClock)
-	begin
-		ClockDivider <= ClockDivider + 1;
-		
-		if(ClockDivider == 0)
-		begin
-			ColorOut <= !ColorOut;
-		end
-	end
-	
-	
-wire [7:0] ReadLine;
-reg [7:0] WriteLine;
-
-wire DataReady;
-wire Send;
-	
-RS232_Impl SerialPC(
-	SerialClock,
-	UART_RX,
-	UART_TX,
-	
-	ReadLine,
-	DataReady,
-	
-	WriteLine,
-	Send
-
-);
-	
-assign LEDR[7:0] = ReadLine;
-	
-reg test_latch = 0;
-assign LEDG[3] = test_latch;
-assign LEDG[2] = UART_RX;
-
-reg[9:0] trash_ctr;
-
-//assign LEDR = trash_ctr;
-
-
-always@ (posedge CLOCK_125_p)
-begin
-	if(UART_RX == 0)
-	begin
-		test_latch = 1;
-	end
-end
-	
-
-always@ (posedge UART_RX)
-begin
-	trash_ctr = trash_ctr + 1;
-end
-	
-	
 endmodule
