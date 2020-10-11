@@ -34,7 +34,6 @@ begin
 		rx_data_ready <= 0;
 	end
 	
-	
 
 	if(rx_idle && !RX)
 	begin
@@ -43,6 +42,8 @@ begin
 		rx_delay = 6'b110000;
 		rx_shift_register[7:0] = 8'b0;
 	end
+	
+	//Main loop
 	else if (!rx_idle)
 	begin
 		
@@ -57,23 +58,14 @@ begin
 				rx_delay[5:0] = 6'b100000;
 			end
 			else begin
-				rx_delay[5:0] = 6'b000010;
-			end
-			
-			rx_bit[3:0] = rx_bit[3:0] + 1;
-						
-			if(rx_bit[3:0] == 4'b1001)
-			begin
 				rx_idle <= 1;
 				rx_data_ready <= 1;
 			end
-			
-			
+
+			rx_bit[3:0] = rx_bit[3:0] + 1;			
 		end
-		else begin
-			//Decrement
-			rx_delay[5:0] <= rx_delay[5:0] - 1;
-		end
+		
+	rx_delay[5:0] <= rx_delay[5:0] - 1;
 	end
 end
 

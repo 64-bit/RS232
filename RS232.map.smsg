@@ -1,0 +1,1 @@
+Warning (10268): Verilog HDL information at RS232_Impl.v(29): always construct contains both blocking and non-blocking assignments File: D:/Chips/RS232/RS232_Impl.v Line: 29
